@@ -17,3 +17,4 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # 创建可执行文件
 add_executable(QueryEnginePushModel ${SOURCES})
+add_executable(test_mvcc test/test_mvcc.cpp)
