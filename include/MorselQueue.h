@@ -1,6 +1,7 @@
 #pragma once
 #include "Row.h"
 #include <mutex>
+#include <algorithm>
 
 struct Morsel {
     size_t start;

@@ -4,6 +4,7 @@
 #include "Transaction.h"
 #include <vector>
 #include <thread>
+#include <cstdio>
 
 class ScanOperator {
 public:
