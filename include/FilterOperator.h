@@ -1,20 +1,21 @@
-#ifndef FILTER_OPERATOR_H
-#define FILTER_OPERATOR_H
-
+#pragma once
+#include "Operator.h"
 #include <functional>
-#include "ScanOperator.h"
 
-class Consumer;
-
-class FilterOperator {
+class FilterOperator : public Operator {
 public:
-    FilterOperator(std::function<bool(const Row&)> predicate);
-    void setConsumer(Consumer* consumer);
-    void consume(const Row& row);
+    explicit FilterOperator(std::function<bool(const Row&)> predicate) 
+        : predicate_(predicate), nextOperator_(nullptr) {}
+
+    void setNextOperator(Operator* next) { nextOperator_ = next; }
+
+    void consume(const Row& row) override {
+        if (predicate_(row) && nextOperator_) {
+            nextOperator_->consume(row);
+        }
+    }
 
 private:
-    std::function<bool(const Row&)> predicate;
-    Consumer* consumer;
+    std::function<bool(const Row&)> predicate_;
+    Operator* nextOperator_;
 };
-
-#endif // FILTER_OPERATOR_H

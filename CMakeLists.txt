@@ -10,9 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # 添加源文件
 set(SOURCES
     main.cpp
-    src/ScanOperator.cpp
-    src/FilterOperator.cpp
-    src/Consumer.cpp
 )
 
 # 添加头文件目录

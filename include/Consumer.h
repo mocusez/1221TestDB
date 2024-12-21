@@ -1,16 +1,18 @@
-#ifndef CONSUMER_H
-#define CONSUMER_H
-
+#pragma once
+#include "Operator.h"
 #include <vector>
-#include "ScanOperator.h"
+#include <mutex>
 
-class Consumer {
+class Consumer : public Operator {
 public:
-    void consume(const Row& row);
-    const std::vector<Row>& getResults() const;
+    void consume(const Row& row) override {
+        std::lock_guard<std::mutex> lock(mutex_);
+        results_.push_back(row);
+    }
+
+    const std::vector<Row>& getResults() const { return results_; }
 
 private:
-    std::vector<Row> results;
+    std::vector<Row> results_;
+    std::mutex mutex_;
 };
-
-#endif // CONSUMER_H

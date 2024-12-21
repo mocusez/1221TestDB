@@ -18,18 +18,16 @@ int main() {
     };
 
     // Create operators
-    ScanOperator scan(data);
+    ScanOperator scan(data,2);
     FilterOperator filter(predicate);
     Consumer consumer;
 
     // Set up the pipeline
-    scan.setConsumer(&filter);
-    filter.setConsumer(&consumer);
+    scan.setNextOperator(&filter);
+    filter.setNextOperator(&consumer);
 
     // Execute the query
-    scan.open();
-    scan.next();
-    scan.close();
+    scan.execute(2);
 
     // Get the results
     const auto& results = consumer.getResults();
