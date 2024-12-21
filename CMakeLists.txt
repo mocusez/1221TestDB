@@ -4,19 +4,19 @@ cmake_minimum_required(VERSION 3.10)
 project(QueryEnginePushModel VERSION 1.0)
 
 # 设置 C++ 标准
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # 添加源文件
 set(SOURCES
     main.cpp
-    ScanOperator.cpp
-    FilterOperator.cpp
-    Consumer.cpp
+    src/ScanOperator.cpp
+    src/FilterOperator.cpp
+    src/Consumer.cpp
 )
 
 # 添加头文件目录
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # 创建可执行文件
 add_executable(QueryEnginePushModel ${SOURCES})
