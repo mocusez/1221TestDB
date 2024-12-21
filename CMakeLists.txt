@@ -18,3 +18,21 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 # 创建可执行文件
 add_executable(QueryEnginePushModel ${SOURCES})
 add_executable(test_mvcc test/test_mvcc.cpp)
+
+set(LLVM_DIR /usr/lib/llvm-18/lib/cmake/llvm/)
+find_package(zstd REQUIRED)
+find_package(LLVM REQUIRED CONFIG)
+add_definitions(${LLVM_DEFINITIONS})
+include_directories(${LLVM_INCLUDE_DIRS})
+llvm_map_components_to_libnames(llvm_libs
+    core
+    support
+    irreader
+    executionengine
+    interpreter
+    mcjit
+    native
+    orcjit
+)
+add_executable(jit jit_run.cpp)
+target_link_libraries(jit PRIVATE ${llvm_libs})
