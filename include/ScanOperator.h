@@ -1,15 +1,16 @@
 #pragma once
 #include "Operator.h"
 #include "MorselQueue.h"
+#include "Transaction.h"
 #include <vector>
 #include <thread>
 
 class ScanOperator {
 public:
-    ScanOperator(const std::vector<Row>& data, size_t morselSize = 1)
-        : data_(data), morselQueue_(data.size(), morselSize), nextOperator_(nullptr) {}
-    
-    
+    ScanOperator(const std::vector<Row>& data, size_t morselSize, Transaction* txn)
+        : data_(data), morselQueue_(data.size(), morselSize), 
+          nextOperator_(nullptr), txn_(txn) {}
+
     void setNextOperator(Operator* next) { nextOperator_ = next; }
 
     void execute(int numThreads = 4) {
@@ -29,14 +30,19 @@ private:
                std::hash<std::thread::id>{}(std::this_thread::get_id()));
         while (morselQueue_.getNextMorsel(morsel)) {
             for (size_t i = morsel.start; i < morsel.end; i++) {
-                if (nextOperator_) {
+                if (isVisible(data_[i]) && nextOperator_) {
                     nextOperator_->consume(data_[i]);
                 }
             }
         }
     }
+    bool isVisible(const Row& row) {
+        return row.begin_ts <= txn_->getBeginTs() && 
+               (row.end_ts == 0 || row.end_ts > txn_->getBeginTs());
+    }
 
     const std::vector<Row>& data_;
     MorselQueue morselQueue_;
     Operator* nextOperator_;
+    Transaction* txn_;
 };

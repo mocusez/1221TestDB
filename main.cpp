@@ -3,33 +3,33 @@
 #include "ScanOperator.h"
 #include "FilterOperator.h"
 #include "Consumer.h"
+#include "TransactionManager.h"
 
 int main() {
     // Sample data
     std::vector<Row> data = {
-        {1, 10},
-        {2, 20},
-        {3, 30}
+        {1, 10, 1, 0, 0},  // id, value, begin_ts, end_ts, txn_id
+        {2, 20, 1, 0, 0},
+        {3, 30, 1, 0, 0}
     };
 
-    // Predicate function for filtering
+    auto& txnManager = TransactionManager::getInstance();
+    auto txn = txnManager.begin();
+
     auto predicate = [](const Row& row) {
         return row.value > 15;
     };
 
-    // Create operators
-    ScanOperator scan(data,2);
+    ScanOperator scan(data, 2, txn);
     FilterOperator filter(predicate);
     Consumer consumer;
 
-    // Set up the pipeline
     scan.setNextOperator(&filter);
     filter.setNextOperator(&consumer);
-
-    // Execute the query
     scan.execute(2);
 
-    // Get the results
+    txnManager.commit(txn);
+
     const auto& results = consumer.getResults();
     for (const auto& row : results) {
         std::cout << "Row: { id: " << row.id << ", value: " << row.value << " }\n";
