@@ -6,6 +6,7 @@ project(QueryEnginePushModel VERSION 1.0)
 # 设置 C++ 标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2")
 
 # 添加源文件
 set(SOURCES
@@ -18,6 +19,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 # 创建可执行文件
 add_executable(QueryEnginePushModel ${SOURCES})
 add_executable(test_mvcc test/test_mvcc.cpp)
+add_executable(test_simd src/simd.cpp test/test_simd.cpp)
 
 set(LLVM_DIR /usr/lib/llvm-18/lib/cmake/llvm/)
 find_package(zstd REQUIRED)

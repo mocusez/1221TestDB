@@ -3,3 +3,4 @@
 - Support Morsel Driven
 - Support MVCC Transaction
 - LLVM JIT Running
+- SIMD(AVX) Aggregate Feature(sum,avg,count) 
