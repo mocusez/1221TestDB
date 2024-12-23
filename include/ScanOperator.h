@@ -6,13 +6,14 @@
 #include <thread>
 #include <cstdio>
 
+template<typename T>
 class ScanOperator {
 public:
-    ScanOperator(const std::vector<Row>& data, size_t morselSize, Transaction* txn)
+    ScanOperator(const std::vector<T>& data, size_t morselSize, Transaction* txn)
         : data_(data), morselQueue_(data.size(), morselSize), 
           nextOperator_(nullptr), txn_(txn) {}
 
-    void setNextOperator(Operator* next) { nextOperator_ = next; }
+    void setNextOperator(Operator<T>* next) { nextOperator_ = next; }
 
     void execute(int numThreads = 4) {
         std::vector<std::thread> threads;
@@ -37,13 +38,13 @@ private:
             }
         }
     }
-    bool isVisible(const Row& row) {
-        return row.begin_ts <= txn_->getBeginTs() && 
-               (row.end_ts == 0 || row.end_ts > txn_->getBeginTs());
+    bool isVisible(const MVCCRow& row) {
+        return row.getBeginTs() <= txn_->getBeginTs() && 
+            (row.getEndTs() == 0 || row.getEndTs() > txn_->getBeginTs());
     }
 
-    const std::vector<Row>& data_;
+    const std::vector<T>& data_;
     MorselQueue morselQueue_;
-    Operator* nextOperator_;
+    Operator<T>* nextOperator_;
     Transaction* txn_;
 };

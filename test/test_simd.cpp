@@ -7,34 +7,34 @@
 
 int main() {
     std::vector<Row> data = {
-        {1, 10, 1, 0, 0}, 
-        {2, 20, 1, 0, 0},
-        {4, 40, 1, 0, 0},
-        {5, 50, 1, 0, 0},
-        {6, 60, 1, 0, 0},
-        {7, 70, 1, 0, 0},
-        {8, 80, 1, 0, 0},
-        {9, 90, 1, 0, 0},
-        {10, 0, 1, 0, 0},
+        {1, 10}, 
+        {2, 20},
+        {4, 40},
+        {5, 50},
+        {6, 60},
+        {7, 70},
+        {8, 80},
+        {9, 90},
+        {10, 0},
     };
     std::vector<int> values(data.size());
     std::transform(data.begin(), data.end(), values.begin(),
-                  [](const Row& row) { return row.value; });
+                  [](const Row& row) { return row.getValue(); });
 
     std::vector<Row> data2 = {
-        {1, 10, 1, 0, 0}, 
-        {2, 20, 1, 0, 0},
-        {4, 30, 1, 0, 0},
-        {5, 50, 1, 0, 0},
-        {6, 60, 1, 0, 0},
-        {7, 70, 1, 0, 0},
-        {8, 80, 1, 0, 0},
-        {9, 100, 1, 0, 0},
-        {10, 0, 1, 0, 0},
+        {1, 10}, 
+        {2, 20},
+        {4, 30},
+        {5, 50},
+        {6, 60},
+        {7, 70},
+        {8, 80},
+        {9, 100},
+        {10, 0},
     };
     std::vector<int> values2(data2.size());
     std::transform(data2.begin(), data2.end(), values2.begin(),
-                  [](const Row& row) { return row.value; });
+                  [](const Row& row) { return row.getValue(); });
 
     auto& txnManager = TransactionManager::getInstance();
     auto txn1 = txnManager.begin();

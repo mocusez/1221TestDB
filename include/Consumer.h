@@ -3,16 +3,17 @@
 #include <vector>
 #include <mutex>
 
-class Consumer : public Operator {
+template<typename T>
+class Consumer : public Operator<T> {
 public:
-    void consume(const Row& row) override {
+    void consume(const T& row) override {
         std::lock_guard<std::mutex> lock(mutex_);
         results_.push_back(row);
     }
 
-    const std::vector<Row>& getResults() const { return results_; }
+    const std::vector<T>& getResults() const { return results_; }
 
 private:
-    std::vector<Row> results_;
+    std::vector<T> results_;
     std::mutex mutex_;
 };

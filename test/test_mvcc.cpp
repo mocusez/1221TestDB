@@ -4,23 +4,23 @@
 #include "TransactionManager.h"
 #include <iostream>
 
-void printResults(const std::vector<Row>& results, const char* prefix) {
+void printResults(const std::vector<MVCCRow>& results, const char* prefix) {
     std::cout << prefix << " Results:\n";
     for (const auto& row : results) {
-        std::cout << "id=" << row.id << ", value=" << row.value 
-                 << " (begin_ts=" << row.begin_ts 
-                 << ", end_ts=" << row.end_ts 
-                 << ", txn_id=" << row.txn_id << ")\n";
+        std::cout << "id=" << row.getId() << ", value=" << row.getValue() 
+                << " (begin_ts=" << row.getBeginTs() 
+                << ", end_ts=" << row.getEndTs() 
+                << ", txn_id=" << row.getTxnId() << ")\n";
     }
     std::cout << "-------------------\n";
 }
 
 int main() {
     // Initial data
-    std::vector<Row> data = {
-        {1, 10, 1, 0, 0},  // id, value, begin_ts, end_ts, txn_id
-        {2, 20, 1, 0, 0},
-        {3, 30, 1, 0, 0}
+    std::vector<MVCCRow> data = {
+        {1, 10},  // id, value, begin_ts, end_ts, txn_id
+        {2, 20},
+        {3, 30}
     };
 
     auto& txnManager = TransactionManager::getInstance();
@@ -29,9 +29,9 @@ int main() {
     auto txn1 = txnManager.begin();
     auto predicate1 = [](const Row& row) { return true; };
     
-    ScanOperator scan1(data, 2, txn1);
-    FilterOperator filter1(predicate1);
-    Consumer consumer1;
+    ScanOperator<MVCCRow> scan1(data, 2, txn1);
+    FilterOperator<MVCCRow> filter1(predicate1);
+    Consumer<MVCCRow> consumer1;
     
     scan1.setNextOperator(&filter1);
     filter1.setNextOperator(&consumer1);
@@ -39,8 +39,8 @@ int main() {
     
     // Transaction 2: Update some values
     auto txn2 = txnManager.begin();
-    data[1].value = 25;    // Update row 2
-    data[1].end_ts = txn2->getBeginTs();
+    data[1].setValue(25);    // Update row 2
+    data[1].setEndTs(txn2->getBeginTs());
     
     // Add new version
     data.push_back({2, 25, txn2->getBeginTs(), 0, txn2->getTxnId()});
@@ -55,9 +55,9 @@ int main() {
     auto txn3 = txnManager.begin();
     auto predicate3 = [](const Row& row) { return true; };
     
-    ScanOperator scan3(data, 2, txn3);
-    FilterOperator filter3(predicate3);
-    Consumer consumer3;
+    ScanOperator<MVCCRow> scan3(data, 2, txn3);
+    FilterOperator<MVCCRow> filter3(predicate3);
+    Consumer<MVCCRow> consumer3;
     
     scan3.setNextOperator(&filter3);
     filter3.setNextOperator(&consumer3);
