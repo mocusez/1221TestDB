@@ -21,6 +21,11 @@ int main(int argc, char *argv[]) {
     InitLLVM X(argc, argv);
     InitializeNativeTarget();
     InitializeNativeTargetAsmPrinter();
+    InitializeNativeTargetAsmParser();  // Add ASM parser initialization
+    
+    // Set up target machine
+    auto JTMB = ExitOnErr(JITTargetMachineBuilder::detectHost());
+    auto TM = ExitOnErr(JTMB.createTargetMachine());
 
     // 创建LLVM上下文
     LLVMContext Context;
