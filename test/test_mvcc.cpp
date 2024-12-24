@@ -15,13 +15,8 @@ void printResults(const std::vector<MVCCRow>& results, const char* prefix) {
     std::cout << "-------------------\n";
 }
 
-int testNormalMVCC(){
-    // Initial data
-    std::vector<MVCCRow> data = {
-        {1, 10},  // id, value
-        {2, 20},
-        {3, 30}
-    };
+int testNormalMVCC(const std::vector<Row>& raw_data){
+    std::vector<MVCCRow> data = MVCCRow::convertRowToMVCCRows(raw_data);
 
     auto& txnManager = TransactionManager::getInstance();
 
@@ -72,12 +67,8 @@ int testNormalMVCC(){
     return 0;
 }
 
-void testMVCCRollback() {
-    std::vector<MVCCRow> data = {
-        {1, 10},
-        {2, 20},
-        {3, 30}
-    };
+void testMVCCRollback(const std::vector<Row>& raw_data) {
+    std::vector<MVCCRow> data = MVCCRow::convertRowToMVCCRows(raw_data);
 
     auto& txnManager = TransactionManager::getInstance();
 
@@ -122,7 +113,12 @@ void testMVCCRollback() {
 }
 
 int main() {
-    testMVCCRollback();
-    testNormalMVCC();
+    std::vector<Row> data = {
+        {1, 10},
+        {2, 20},
+        {3, 30}
+    };
+    testMVCCRollback(data);
+    testNormalMVCC(data);
     return 0;
 }

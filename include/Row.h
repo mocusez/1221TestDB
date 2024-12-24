@@ -1,5 +1,7 @@
 #pragma once
 #include <cstdint>
+#include <algorithm>
+#include <vector>
 
 class Row {
 private:
@@ -55,6 +57,18 @@ public:
     MVCCRow() : Row(), MVCC() {}
     MVCCRow(int i, int v) : Row(i, v), MVCC() {}
     MVCCRow(int i, int v,uint64_t begin_ts, uint64_t end_ts, uint64_t txn_id) : Row(i, v), MVCC(begin_ts,end_ts,txn_id) {}
+    explicit MVCCRow(const Row& row) : Row(row),MVCC() {}
+    static std::vector<MVCCRow> convertRowToMVCCRows(const std::vector<Row>& rows) {
+        std::vector<MVCCRow> mvccRows;
+        mvccRows.reserve(rows.size());
+        
+        std::transform(rows.begin(), rows.end(), 
+                    std::back_inserter(mvccRows),
+                    [](const Row& row) {
+                        return MVCCRow(row);
+                    });
+        return mvccRows;
+    }
     virtual ~MVCCRow() override {}
 };
 
