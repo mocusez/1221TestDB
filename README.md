@@ -5,3 +5,4 @@
 - LLVM JIT Running
 - SIMD(AVX) Aggregate Feature(sum,avg,count) 
 - SIMD(AVX) Join Feature(inner, right, left) 
+- Optimistic Lock Implement(Not Detect thread conflict)

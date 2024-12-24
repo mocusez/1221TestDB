@@ -34,6 +34,22 @@ public:
     void setTxnId(uint64_t tid) { txn_id = tid; }
 };
 
+class OptimisticLockColumn{
+private:
+    uint64_t version;
+public:
+    OptimisticLockColumn() : version(1){}
+    uint64_t getVersion() const {
+        return version;
+    }
+
+    void updateVersion() {
+        version++;
+    }
+    virtual ~OptimisticLockColumn() {}
+};
+
+
 class MVCCRow : public Row, public MVCC {
 public:
     MVCCRow() : Row(), MVCC() {}
@@ -41,3 +57,10 @@ public:
     MVCCRow(int i, int v,uint64_t begin_ts, uint64_t end_ts, uint64_t txn_id) : Row(i, v), MVCC(begin_ts,end_ts,txn_id) {}
     virtual ~MVCCRow() override {}
 };
+
+class OptimisticLockRow : public Row, public OptimisticLockColumn {
+public:
+    OptimisticLockRow(int i, int v) : Row(i,v), OptimisticLockColumn() {}        
+    virtual ~OptimisticLockRow() = default;
+};
+
