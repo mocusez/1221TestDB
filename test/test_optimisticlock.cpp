@@ -3,13 +3,9 @@
 #include <thread>
 #include <iostream>
 
-int main() {
+int normalOptimisticLock(const std::vector<Row>& raw_data) {
     OptimisticLock lock;
-    std::vector<OptimisticLockRow> data = {
-        {1, 10},
-        {2, 20},
-        {3, 30}
-    };
+    std::vector<OptimisticLockRow> data = OptimisticLockRow::convertRowToOptimisticLockRows(raw_data);
 
     auto [value, version] = lock.get(1,data);
     std::cout << "Initial value: " << value << ", version: " << version << std::endl;
@@ -33,5 +29,15 @@ int main() {
     auto [newValue1, newVersion1] = lock.get(1,data);
     std::cout << "Final value: " << newValue1 << ", version: " << newVersion1 << std::endl;
 
+    return 0;
+}
+
+int main(){
+    std::vector<Row> data = {
+        {1, 10},
+        {2, 20},
+        {3, 30}
+    };
+    normalOptimisticLock(data);
     return 0;
 }

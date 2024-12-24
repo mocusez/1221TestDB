@@ -76,5 +76,18 @@ class OptimisticLockRow : public Row, public OptimisticLockColumn {
 public:
     OptimisticLockRow(int i, int v) : Row(i,v), OptimisticLockColumn() {}        
     virtual ~OptimisticLockRow() = default;
+
+    explicit OptimisticLockRow(const Row& row) : Row(row),OptimisticLockColumn() {}
+    static std::vector<OptimisticLockRow> convertRowToOptimisticLockRows(const std::vector<Row>& rows) {
+        std::vector<OptimisticLockRow> OplRows;
+        OplRows.reserve(rows.size());
+        
+        std::transform(rows.begin(), rows.end(), 
+                    std::back_inserter(OplRows),
+                    [](const Row& row) {
+                        return OptimisticLockRow(row);
+                    });
+        return OplRows;
+    }
 };
 
