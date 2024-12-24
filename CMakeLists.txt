@@ -16,6 +16,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 # 创建可执行文件
 add_executable(test_mvcc test/test_mvcc.cpp)
 add_executable(test_simd src/simd.cpp test/test_simd.cpp)
+add_executable(test_optimistic test/test_optimisticlock.cpp)
 
 set(LLVM_DIR /usr/lib/llvm-18/lib/cmake/llvm/)
 find_package(zstd REQUIRED)
