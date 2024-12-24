@@ -1,0 +1,52 @@
+JIT> loada
+test_mvcc.ll Load Complete!
+JIT> run
+Thread 13837580185600038502 processing
+Thread 480490622468376270 processing
+Initial state Results:
+id=1, value=10 (begin_ts=1, end_ts=0, txn_id=0)
+id=2, value=20 (begin_ts=1, end_ts=0, txn_id=0)
+id=3, value=30 (begin_ts=1, end_ts=0, txn_id=0)
+-------------------
+After T2 Update (Before Rollback) Results:
+id=1, value=10 (begin_ts=1, end_ts=0, txn_id=0)
+id=2, value=20 (begin_ts=1, end_ts=4, txn_id=0)
+id=3, value=30 (begin_ts=1, end_ts=0, txn_id=0)
+id=2, value=25 (begin_ts=4, end_ts=0, txn_id=3)
+-------------------
+Thread 480490622468376270 processing
+Thread 13837580185600038502 processing
+After rollback Results:
+id=1, value=10 (begin_ts=1, end_ts=0, txn_id=0)
+id=2, value=20 (begin_ts=1, end_ts=0, txn_id=0)
+id=3, value=30 (begin_ts=1, end_ts=0, txn_id=0)
+-------------------
+Thread 13837580185600038502 processing
+Thread 480490622468376270 processing
+Txn1 (before Txn2 commit) Results:
+id=1, value=10 (begin_ts=1, end_ts=0, txn_id=0)
+id=2, value=20 (begin_ts=1, end_ts=0, txn_id=0)
+id=3, value=30 (begin_ts=1, end_ts=0, txn_id=0)
+-------------------
+Thread 480490622468376270 processing
+Thread 13837580185600038502 processing
+Txn3 (after Txn2 commit) Results:
+id=1, value=10 (begin_ts=1, end_ts=0, txn_id=0)
+id=3, value=30 (begin_ts=1, end_ts=0, txn_id=0)
+id=2, value=25 (begin_ts=10, end_ts=0, txn_id=9)
+-------------------
+Result: 0
+JIT> clean
+Module is Clean!
+JIT> loadb
+test_opl.ll Load Complete!
+JIT> run
+Initial value: 20, version: 1
+Thread 1 update: success
+Running value: 15, version: 2
+Thread 2 update: success
+Final value: 25, version: 3
+Result: 0
+JIT> exit
+Module is Clean!
+Good Bye!

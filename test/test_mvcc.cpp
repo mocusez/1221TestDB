@@ -122,3 +122,12 @@ int main() {
     testNormalMVCC(data);
     return 0;
 }
+
+extern "C" {
+    __attribute__((used))
+    int jitMain(std::vector<Row> data){
+        testMVCCRollback(data);
+        testNormalMVCC(data);
+        return 0;
+    }
+}

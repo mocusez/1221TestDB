@@ -41,3 +41,11 @@ int main(){
     normalOptimisticLock(data);
     return 0;
 }
+
+extern "C" {
+    __attribute__((used))
+    int jitMain(std::vector<Row> data){
+        normalOptimisticLock(data);
+        return 0;
+    }
+}

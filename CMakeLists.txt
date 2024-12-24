@@ -34,4 +34,7 @@ llvm_map_components_to_libnames(llvm_libs
     orcjit
 )
 add_executable(jit jit_run.cpp)
-target_link_libraries(jit PRIVATE ${llvm_libs})
+target_link_libraries(jit ${llvm_libs})
+
+add_executable(jitSwitch test/jit_switch_run.cpp)
+target_link_libraries(jitSwitch ${llvm_libs})
