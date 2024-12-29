@@ -37,7 +37,7 @@ test(){
 # Main execution
 main() {
     clean
-    build "test_mvcc.cpp" "test_mvcc.ll"
+    build "test_mvcc_module.cpp" "test_mvcc.ll"
     build "test_opl.cpp" "test_opl.ll"
     echo -e "${GREEN}Build completed successfully!${NC}"
     test

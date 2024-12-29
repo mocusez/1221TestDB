@@ -112,20 +112,19 @@ void testMVCCRollback(const std::vector<Row>& raw_data) {
     txnManager.commit(txn3);
 }
 
-int main() {
-    std::vector<Row> data = {
-        {1, 10},
-        {2, 20},
-        {3, 30}
-    };
-    testMVCCRollback(data);
-    testNormalMVCC(data);
-    return 0;
-}
-
 extern "C" {
     __attribute__((used))
     int jitMain(std::vector<Row> data){
+        testMVCCRollback(data);
+        testNormalMVCC(data);
+        return 0;
+    }
+    int test() {
+        std::vector<Row> data = {
+            {1, 10},
+            {2, 20},
+            {3, 30}
+        };
         testMVCCRollback(data);
         testNormalMVCC(data);
         return 0;
