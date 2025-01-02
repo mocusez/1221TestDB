@@ -40,3 +40,33 @@ target_link_libraries(jit ${llvm_libs})
 
 add_executable(jitSwitch test/jit_switch_run.cpp)
 target_link_libraries(jitSwitch ${llvm_libs})
+
+set(MLIR_DIR /usr/lib/llvm-18/lib/cmake/mlir/)
+find_package(MLIR REQUIRED CONFIG)
+set(LLVM_RUNTIME_OUTPUT_INTDIR ${CMAKE_BINARY_DIR}/bin)
+set(LLVM_LIBRARY_OUTPUT_INTDIR ${CMAKE_BINARY_DIR}/lib)
+set(MLIR_BINARY_DIR ${CMAKE_BINARY_DIR})
+list(APPEND CMAKE_MODULE_PATH "${MLIR_CMAKE_DIR}")
+include(TableGen)
+include(AddLLVM)
+include(AddMLIR)
+get_property(dialect_libs GLOBAL PROPERTY MLIR_DIALECT_LIBS)
+get_property(conversion_libs GLOBAL PROPERTY MLIR_CONVERSION_LIBS)
+
+add_executable(mlir_run mlir_run.cpp src/LowerToLLVM.cpp)
+target_link_libraries(mlir_run
+  PRIVATE
+  ${dialect_libs}
+  ${conversion_libs}
+    MLIRSupport
+    MLIRIR
+    MLIRFuncDialect
+    MLIRArithDialect
+    MLIRVectorDialect
+    MLIRLLVMDialect
+    MLIRPass
+    MLIRTransforms
+
+    MLIRBuiltinToLLVMIRTranslation
+    MLIRExecutionEngine
+    )
