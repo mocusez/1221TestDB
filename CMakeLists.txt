@@ -53,6 +53,9 @@ include(AddMLIR)
 get_property(dialect_libs GLOBAL PROPERTY MLIR_DIALECT_LIBS)
 get_property(conversion_libs GLOBAL PROPERTY MLIR_CONVERSION_LIBS)
 
+add_executable(jit_lib_test test/jit_lib_test.cpp)
+target_link_libraries(jit_lib_test ${llvm_libs})
+
 add_executable(mlir_run mlir_run.cpp src/LowerToLLVM.cpp)
 add_executable(mlir_lib_run test/mlir_lib_run.cpp src/LowerToLLVM.cpp)
 target_link_libraries(mlir_run
