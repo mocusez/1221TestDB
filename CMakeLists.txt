@@ -15,6 +15,8 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # 创建可执行文件
 add_executable(test_mvcc test/test_mvcc_module.cpp test/test_mvcc_run.cpp)
+add_library(test_mvcc_lib SHARED test/test_mvcc_module.cpp)
+
 add_executable(test_simd src/simd.cpp test/test_simd.cpp)
 add_executable(test_opl test/test_opl.cpp)
 
