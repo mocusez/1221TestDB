@@ -54,8 +54,8 @@ get_property(dialect_libs GLOBAL PROPERTY MLIR_DIALECT_LIBS)
 get_property(conversion_libs GLOBAL PROPERTY MLIR_CONVERSION_LIBS)
 
 add_executable(mlir_run mlir_run.cpp src/LowerToLLVM.cpp)
+add_executable(mlir_lib_run test/mlir_lib_run.cpp src/LowerToLLVM.cpp)
 target_link_libraries(mlir_run
-  PRIVATE
   ${dialect_libs}
   ${conversion_libs}
     MLIRSupport
@@ -70,3 +70,18 @@ target_link_libraries(mlir_run
     MLIRBuiltinToLLVMIRTranslation
     MLIRExecutionEngine
     )
+target_link_libraries(mlir_lib_run
+    ${dialect_libs}
+    ${conversion_libs}
+      MLIRSupport
+      MLIRIR
+      MLIRFuncDialect
+      MLIRArithDialect
+      MLIRVectorDialect
+      MLIRLLVMDialect
+      MLIRPass
+      MLIRTransforms
+  
+      MLIRBuiltinToLLVMIRTranslation
+      MLIRExecutionEngine
+)
