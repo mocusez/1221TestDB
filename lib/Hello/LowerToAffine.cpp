@@ -170,6 +170,7 @@ void HelloToAffineLowerPass::runOnOperation() {
     });
   });
   target.addLegalOp<hello::WorldOp>();
+  // Remember addLegalOp to avoid lower to affine
   target.addLegalOp<hello::TestOp>();
   target.addLegalOp<hello::AddOp>();
 

@@ -235,28 +235,44 @@ private:
   }
 };
 
-
+/// Lowers TestOp to LLVM dialect
+/// This pattern converts high-level TestOp to LLVM function calls
 class TestOpLowering : public mlir::ConversionPattern {
 public:
+  /// Constructor that binds the pattern to TestOp
   explicit TestOpLowering(mlir::MLIRContext *context)
       : mlir::ConversionPattern(hello::TestOp::getOperationName(), 1,
                                 context) {}
 
+  /// Main conversion method that matches TestOp and rewrites it to LLVM dialect
+  /// @param op The operation to convert
+  /// @param operands The operands after conversion
+  /// @param rewriter The pattern rewriter to use
   mlir::LogicalResult
   matchAndRewrite(mlir::Operation *op, mlir::ArrayRef<mlir::Value> operands,
                   mlir::ConversionPatternRewriter &rewriter) const override {
+    // Get the current context and parent module
     auto *context = rewriter.getContext();
     mlir::ModuleOp parentModule = op->getParentOfType<mlir::ModuleOp>();
+    
+    // Get or create the printf function declaration
     auto printfRef = getOrInsertPrintf(rewriter, parentModule);
     auto loc = op->getLoc();
+    
+    // Create i32 return type
     auto llvmI32Ty = mlir::IntegerType::get(context, 32);
+
+    // Create call to test function
     rewriter.create<mlir::LLVM::CallOp>(loc, llvmI32Ty,
                                         printfRef, mlir::ValueRange{});
+    
+    // Remove the original operation
     rewriter.eraseOp(op);
     return mlir::success();
   }
 
 private:
+  /// Creates function type for test function (returns i32, takes no params)
   static mlir::LLVM::LLVMFunctionType
   getFuncType(mlir::MLIRContext *context) {
     auto llvmI32Ty = mlir::IntegerType::get(context, 32);
@@ -264,6 +280,9 @@ private:
     return runType;
   }
 
+  /// Gets existing or creates new test function declaration
+  /// @param rewriter Pattern rewriter to use for creating new ops
+  /// @param module Module to insert the function into
   static mlir::FlatSymbolRefAttr
   getOrInsertPrintf(mlir::PatternRewriter &rewriter, mlir::ModuleOp module) {
     auto *context = module.getContext();
@@ -271,6 +290,7 @@ private:
       return mlir::SymbolRefAttr::get(context, "test");
     }
 
+    // Create new function at module start
     mlir::PatternRewriter::InsertionGuard insertGuard(rewriter);
     rewriter.setInsertionPointToStart(module.getBody());
     auto runType = getFuncType(context);
