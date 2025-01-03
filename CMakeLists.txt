@@ -6,7 +6,8 @@ project(QueryEnginePushModel VERSION 1.0)
 # 设置 C++ 标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2")
+# Using lld-18
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2 -DLLVM_ENABLE_LLD=ON")
 
 
 
