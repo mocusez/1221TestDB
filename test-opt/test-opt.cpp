@@ -204,13 +204,6 @@ int main(int argc, char **argv) {
     // Create function returning i32
     auto i32Type = builder.getI32Type();
     mlir::Location loc = builder.getUnknownLoc();
-    auto runType = mlir::LLVM::LLVMFunctionType::get(i32Type, {}, false);
-
-    auto runMlir = builder.create<mlir::LLVM::LLVMFuncOp>(
-        builder.getUnknownLoc(),
-        "test",
-        runType
-    );
 
     auto mainType = builder.getFunctionType({}, {i32Type});
     auto mainFunc = builder.create<mlir::func::FuncOp>(
@@ -239,7 +232,6 @@ int main(int argc, char **argv) {
       builder.getUnknownLoc(), 
       mlir::ValueRange{retVal});
 
-    module->push_back(runMlir);
     module->push_back(mainFunc);
   
   
